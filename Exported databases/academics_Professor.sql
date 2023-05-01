@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.30, for macos12 (x86_64)
 --
--- Host: localhost    Database: hostel
+-- Host: localhost    Database: academics
 -- ------------------------------------------------------
 -- Server version	8.0.32
 
@@ -16,13 +16,37 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping events for database 'hostel'
+-- Table structure for table `Professor`
 --
 
+DROP TABLE IF EXISTS `Professor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Professor` (
+  `prof_id` varchar(15) NOT NULL,
+  `fname` varchar(50) DEFAULT NULL,
+  `lname` varchar(50) DEFAULT NULL,
+  `designation` varchar(50) DEFAULT NULL,
+  `email` varchar(250) DEFAULT NULL,
+  `dept_id` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`prof_id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `dept_id` (`dept_id`),
+  CONSTRAINT `professor_ibfk_1` FOREIGN KEY (`email`) REFERENCES `campus`.`master_employee` (`email`) ON DELETE CASCADE,
+  CONSTRAINT `professor_ibfk_2` FOREIGN KEY (`dept_id`) REFERENCES `Department` (`dept_id`),
+  CONSTRAINT `professor_ibfk_3` FOREIGN KEY (`dept_id`) REFERENCES `Department` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
--- Dumping routines for database 'hostel'
+-- Dumping data for table `Professor`
 --
-/*!50003 DROP PROCEDURE IF EXISTS `add_staff` */;
+
+LOCK TABLES `Professor` WRITE;
+/*!40000 ALTER TABLE `Professor` DISABLE KEYS */;
+INSERT INTO `Professor` VALUES ('265','Mark','Rober','Cleaning Staff','mark@42.com','CS');
+/*!40000 ALTER TABLE `Professor` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -32,33 +56,9 @@
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_staff`(IN staff_id VARCHAR(15))
-BEGIN
-	IF EXISTS(SELECT e_id, management FROM campus.master_employee WHERE e_id = staff_id AND management IS NULL) THEN
-	UPDATE campus.master_employee SET management = 'hostel' WHERE e_id = staff_id;
-    END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `add_student` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_student`(IN student_id VARCHAR(15))
-BEGIN
-	IF EXISTS(SELECT s_id, is_hosteler FROM campus.master_student WHERE s_id = student_id AND is_hosteler = 0) THEN
-	UPDATE campus.master_student SET is_hosteler = 1 WHERE s_id = student_id;
-    END IF;
-END ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `remove_prof` AFTER DELETE ON `professor` FOR EACH ROW BEGIN
+	DELETE FROM campus.master_employee WHERE e_id = OLD.prof_id;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -74,4 +74,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-30 13:22:04
+-- Dump completed on 2023-05-01 23:03:54

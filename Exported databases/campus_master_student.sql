@@ -49,7 +49,7 @@ CREATE TABLE `master_student` (
 
 LOCK TABLES `master_student` WRITE;
 /*!40000 ALTER TABLE `master_student` DISABLE KEYS */;
-INSERT INTO `master_student` VALUES ('2019A4PS0076U','Cristiano Ronaldo','finis@ronaldo.com','+971535542','Portugal, near ronaldo','IND',67123,'89567','2024-02-11',1),('2020A1PS0008U','Sadio Mane','mane@sad.com','+9719839473','Senegal, Al Qusqa, near Touba Mosque','IND',55555,'67671','2020-12-12',0),('2021A7PS0045U','Harry Potter','harry@potter.com','+97145334','Bruh','IND',4353,'234234','2023-11-02',1),('2021A7PS0063U','Lionel Messi','goat@ronaldo.com','+9714534525','Argentina, BuenoAires airport','IND',45321,'90891','2021-12-01',1),('2021AATS0078U','Manuel Akanji','manuel@qq.com','+971534542','Switzerland, Sector 45, Jungefrau','IND',4343,'42343','2023-11-02',0);
+INSERT INTO `master_student` VALUES ('2019A4PS0100U','Cristiano Ronaldo','finis@ronaldo.com','+971535542','Portugal, near ronaldo','IND',67123,'111111','2019-04-02',1),('2020A1PS0008U','Sadio Mane','mane@sad.com','+9719839473','Senegal, Al Qusqa, near Touba Mosque','IND',55555,'67671','2020-04-04',0),('2021A7PS0045U','Harry Potter','harry@potter.com','+97145334','Bruh','IND',4353,'234234','2021-04-03',1),('2021A7PS0063U','Lionel Messi','goat@ronaldo.com','+9714534525','Argentina, BuenoAires airport','IND',45321,'90891','2021-12-01',1),('2021AATS0078U','Manuel Akanji','manuel@qq.com','+971534542','Switzerland, Sector 45, Jungefrau','IND',4343,'42343','2021-11-02',0);
 /*!40000 ALTER TABLE `master_student` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -88,7 +88,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `student_to_hostel_2` AFTER UPDATE ON `master_student` FOR EACH ROW BEGIN
-	IF NEW.is_hosteler THEN
+	IF NOT OLD.is_hosteler AND NEW.is_hosteler THEN
 	INSERT INTO hostel.HostlersInfo VALUES (
     NEW.s_id,
     SUBSTRING_INDEX(NEW.full_name,' ', 1),
@@ -98,6 +98,49 @@ DELIMITER ;;
     NEW.phone
     );
     END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update_student_details` AFTER UPDATE ON `master_student` FOR EACH ROW BEGIN
+	IF OLD.is_hosteler AND NEW.is_hosteler THEN # No change in the hostler status
+	UPDATE hostel.HostlersInfo SET
+    s_id = NEW.s_id,
+    fname = SUBSTRING_INDEX(NEW.full_name,' ', 1),
+    lname = SUBSTRING_INDEX(NEW.full_name,' ', -1),
+    emirates_id = NEW.emirates_id,
+    passport_no = NEW.passport_no,
+    phone = NEW.phone
+    WHERE s_id = OLD.s_id;
+    END IF;
+    
+	IF OLD.is_hosteler AND NOT NEW.is_hosteler THEN # Status change from hostler to day scholar
+    DELETE FROM hostel.HostlersInfo WHERE s_id = OLD.s_id;
+    END IF;
+    
+	UPDATE academics.Student SET
+    s_id = NEW.s_id,
+    fname = SUBSTRING_INDEX(NEW.full_name,' ', 1),
+    lname = SUBSTRING_INDEX(NEW.full_name,' ', -1)
+    WHERE s_id = OLD.s_id;
+
+	UPDATE library.Student SET
+    s_id = NEW.s_id,
+    fname = SUBSTRING_INDEX(NEW.full_name,' ', 1),
+    lname = SUBSTRING_INDEX(NEW.full_name,' ', -1),
+    email = NEW.email
+    WHERE s_id = OLD.s_id;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -114,4 +157,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-30 13:22:04
+-- Dump completed on 2023-05-01 23:03:53

@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.30, for macos12 (x86_64)
 --
--- Host: localhost    Database: hostel
+-- Host: localhost    Database: academics
 -- ------------------------------------------------------
 -- Server version	8.0.32
 
@@ -16,31 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Room`
+-- Table structure for table `Student`
 --
 
-DROP TABLE IF EXISTS `Room`;
+DROP TABLE IF EXISTS `Student`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Room` (
-  `room_no` int NOT NULL,
-  `floor` int NOT NULL,
-  `block` varchar(10) NOT NULL,
-  `resident_id` varchar(15) DEFAULT NULL,
-  PRIMARY KEY (`room_no`,`floor`,`block`),
-  KEY `resident_id` (`resident_id`),
-  CONSTRAINT `room_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `HostlersInfo` (`s_id`) ON DELETE CASCADE
+CREATE TABLE `Student` (
+  `s_id` varchar(15) NOT NULL,
+  `fname` varchar(50) DEFAULT NULL,
+  `lname` varchar(50) DEFAULT NULL,
+  `current_year` int DEFAULT NULL,
+  `dept_id` varchar(50) DEFAULT NULL,
+  KEY `dept_id` (`dept_id`),
+  KEY `idx_student_s_id` (`s_id`),
+  CONSTRAINT `student_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `Department` (`dept_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Room`
+-- Dumping data for table `Student`
 --
 
-LOCK TABLES `Room` WRITE;
-/*!40000 ALTER TABLE `Room` DISABLE KEYS */;
-INSERT INTO `Room` VALUES (21,2,'C','2019A4PS0076U'),(12,1,'A','2021A7PS0045U'),(78,7,'A','2021A7PS0063U');
-/*!40000 ALTER TABLE `Room` ENABLE KEYS */;
+LOCK TABLES `Student` WRITE;
+/*!40000 ALTER TABLE `Student` DISABLE KEYS */;
+INSERT INTO `Student` VALUES ('2019A4PS0100U','Cristiano','Ronaldo',5,'CS'),('2020A1PS0008U','Sadio','Mane',4,NULL),('2021A7PS0045U','Harry','Potter',3,NULL),('2021A7PS0063U','Lionel','Messi',2,NULL);
+/*!40000 ALTER TABLE `Student` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-30 13:22:04
+-- Dump completed on 2023-05-01 23:03:54

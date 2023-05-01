@@ -30,7 +30,7 @@ CREATE TABLE `Insurance` (
   `end_date` date DEFAULT NULL,
   PRIMARY KEY (`policy_no`),
   KEY `s_id` (`s_id`),
-  CONSTRAINT `insurance_ibfk_1` FOREIGN KEY (`s_id`) REFERENCES `HostlersInfo` (`s_id`) ON DELETE CASCADE
+  CONSTRAINT `insurance_ibfk_1` FOREIGN KEY (`s_id`) REFERENCES `HostlersInfo` (`s_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -40,6 +40,7 @@ CREATE TABLE `Insurance` (
 
 LOCK TABLES `Insurance` WRITE;
 /*!40000 ALTER TABLE `Insurance` DISABLE KEYS */;
+INSERT INTO `Insurance` VALUES (1456,'ICICI','2021A7PS0063U','2021-06-05','2025-06-05'),(1678,'LIC','2021A7PS0045U','2021-07-21','2025-06-12'),(1987,'Apollo','2019A4PS0100U','2019-04-12','2023-07-05');
 /*!40000 ALTER TABLE `Insurance` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-30 13:22:04
+-- Dump completed on 2023-05-01 23:03:52

@@ -32,7 +32,8 @@ CREATE TABLE `HostelStaff` (
   PRIMARY KEY (`staff_id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `phone` (`phone`),
-  CONSTRAINT `hostelstaff_ibfk_1` FOREIGN KEY (`email`) REFERENCES `campus`.`master_employee` (`email`) ON DELETE CASCADE
+  CONSTRAINT `hostelstaff_ibfk_1` FOREIGN KEY (`email`) REFERENCES `campus`.`master_employee` (`email`) ON DELETE CASCADE,
+  CONSTRAINT `hostelstaff_ibfk_2` FOREIGN KEY (`email`) REFERENCES `campus`.`master_employee` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -55,7 +56,7 @@ UNLOCK TABLES;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `remove_staff` AFTER DELETE ON `hostelstaff` FOR EACH ROW BEGIN
-	UPDATE campus.master_employee SET management = NULL;
+	UPDATE campus.master_employee SET management = NULL WHERE staff_id = OLD.staff_id;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -72,4 +73,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-30 13:22:04
+-- Dump completed on 2023-05-01 23:03:53
